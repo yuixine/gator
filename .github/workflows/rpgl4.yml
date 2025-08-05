@@ -1,0 +1,16 @@
+name: Windows - Rapidgator4
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Start Building...
+    runs-on: windows-latest
+  
+    
+    steps:
+      - name: Downloading & Installing Essentials
+        run: |
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Bogyi2024/log/main/dep_download/runrpg4.bat" -OutFile "runrpg4.bat"
+          cmd /c runrpg4.bat

@@ -1,0 +1,40 @@
+name: Trigger Multiple Workflows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  trigger_workflows:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run multiple workflow dispatches with delays based on Pastebin URLs count
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          REPO: Bogyi2024/rapidgator
+          PASTEBIN_URL: https://pastebin.com/raw/gGFrt0Ci
+        run: |
+          set -e
+
+          echo "Fetching pastebin content..."
+          content=$(curl -s $PASTEBIN_URL || { echo "Failed to fetch pastebin"; exit 1; })
+          echo "Pastebin content:"
+          echo "$content"
+
+          # Count non-empty lines (URLs)
+          lines=$(echo "$content" | grep -cve '^\s*$')
+          echo "Found $lines URLs in pastebin."
+
+          if [ "$lines" -eq 0 ]; then
+            echo "No URLs found, exiting."
+            exit 0
+          fi
+
+          for i in $(seq 1 $lines); do
+            workflow_name="Ubuntu - Rapidgator_Multiline - line $i"
+            echo "Triggering workflow: $workflow_name"
+            gh workflow run "$workflow_name" --repo "$REPO"
+            sleep 2
+          done
